@@ -1,0 +1,30 @@
+{
+  "pages": [
+    "pages/basics/index/index",
+    "pages/about/home/home"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "ColorUI",
+    "navigationStyle": "custom",
+    "navigationBarTextStyle": "white"
+  },
+  "tabBar": {
+    "list": [
+      {
+        "name" : "1.1 基础首页",
+        "pagePath": "pages/basics/index/index",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/about/home/home",
+        "text": "关于我们"
+      }
+    ]
+  },
+  "usingComponents": {
+    "cu-custom": "/colorui/components/cu-custom"
+  },
+  "sitemapLocation": "sitemap.json"
+}
