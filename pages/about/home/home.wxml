@@ -11,6 +11,7 @@
   </view>
 </view>
 <view class="text-center margin-top">
-  <text class="text-grey text-xl">{{motto}}</text>
+<button size="min" bindtap="start">00</button>
+  <text class="text-grey text-xl" bindtap="start">{{motto}}</text>
 </view>
 

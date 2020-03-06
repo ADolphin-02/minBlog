@@ -14,7 +14,7 @@ Component({
     bgColor: {
       type: String,
       default: ''
-    }, 
+    },
     isCustom: {
       type: [Boolean, String],
       default: false
@@ -24,6 +24,14 @@ Component({
       default: false
     },
     bgImage: {
+      type: String,
+      default: ''
+    },
+    isNav: {
+      type: [Boolean, String],
+      default: true
+    },
+    isFixed: {
       type: String,
       default: ''
     },
@@ -45,9 +53,9 @@ Component({
         delta: 1
       });
     },
-    toHome(){
+    toHome() {
       wx.reLaunch({
-        url: '/pages/index/index',
+        url: '/pages/basics/index/index',
       })
     }
   }

@@ -1,7 +1,9 @@
 {
   "pages": [
     "pages/basics/index/index",
-    "pages/about/home/home"
+    "pages/about/home/home",
+    "pages/basics/article/article"
+    
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -10,21 +12,12 @@
     "navigationStyle": "custom",
     "navigationBarTextStyle": "white"
   },
-  "tabBar": {
-    "list": [
-      {
-        "name" : "1.1 基础首页",
-        "pagePath": "pages/basics/index/index",
-        "text": "首页"
-      },
-      {
-        "pagePath": "pages/about/home/home",
-        "text": "关于我们"
-      }
-    ]
-  },
+
   "usingComponents": {
-    "cu-custom": "/colorui/components/cu-custom"
+    "cu-custom": "/colorui/components/cu-custom",
+    "wh-typeWriter": "/components/typeWriter/wh-typeWriter",
+    "wh-authorCard": "/components/authorCard/wh-authorCard",
+    "wh-addTips": "/components/addTips/wh-addTips"
   },
   "sitemapLocation": "sitemap.json"
 }
