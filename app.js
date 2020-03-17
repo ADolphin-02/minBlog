@@ -5,9 +5,9 @@ const requestHandler = require('./utils/promise.js');
 App({
   onLaunch: function() {
     // 展示本地存储能力
-    var logs = wx.getStorageSync('logs') || []
-    logs.unshift(Date.now())
-    wx.setStorageSync('logs', logs)
+    // var logs = wx.getStorageSync('logs') || []
+    // logs.unshift(Date.now())
+    // wx.setStorageSync('logs', logs)
     
     // 判断何时执行登陆事件（更新登陆信息）
     // this.determineWhetherToRelogin();
@@ -69,7 +69,7 @@ App({
                 console.log(res)
                 if (res.statusCode == 200) {
                   // 注意这里
-                  resolve(res);
+                  resolve(res.data.data);
                   that.successAdminLogin(res.data.data)
                 } else {
                   console.log(res.errMsg)
@@ -90,9 +90,11 @@ App({
   successAdminLogin: function (res, selfObj) {
     var that = this;
     // 1. 取出token
-    const token = res
+    const token = res.token
+    const openId = res.openId
     // 2.存储在全局变量中
     this.globalData.token = token;
+    this.globalData.openId = openId;
     // 3.存储到storage
     wx.setStorage({
       key: 'token',
@@ -113,10 +115,12 @@ App({
   globalData: {//全局变量
     userInfo: null,
     skin: null, // 炫图模式
+    Role:'游客',
     roleFlag: false,
-    url: "http://127.0.0.1:8089",//http://localhost:8090
+    url: "http://localhost:8089",//http://localhost:8089//http://adolphin.xyz:8089
     BlogName: "一只海豚",
     token: "",// 在app加载时候获取，缓存也有
+    openId:'',
     highlightStyle: "dracula", //代码高亮样式，可用值default,darcula,dracula,tomorrow
   }
 })

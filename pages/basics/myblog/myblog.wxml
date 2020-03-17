@@ -1,0 +1,99 @@
+<scroll-view scroll-y class="DrawerPage" scroll-with-animation="true" style="background-color: {{skin?'#030852':'#ffffff'}};">
+
+<view class="cu-bar fixed bg-shadeTop" style="height:{{CustomBar}}px;padding-top:{{StatusBar}}px;">
+    <navigator class='action' open-type="navigateBack" delta="1" hover-class="none">
+      <text class='cuIcon-back'></text> 返回
+    </navigator>
+    <view class='content' style='top:{{StatusBar}}px;'>Tab索引</view>
+</view>
+
+<view class="fixed"  >
+    <image style="width: 100%;" mode="scaleToFill"  src="http://localhost:8089/upload/2020-02-26/1582702288563_271.jpg" />
+</view>
+<scroll-view scroll-x class="bg-white nav">
+  <view class="flex text-center">
+    <view class="cu-item flex-sub {{0==TabCur?'text-orange cur':''}}"  bindtap="tabSelect" data-id="{{index}}">
+      卡片
+    </view>
+    <view class="cu-item flex-sub {{1==TabCur?'text-orange cur':''}}"  bindtap="tabSelect" data-id="{{index}}">
+      时间轴
+    </view>
+  </view>
+</scroll-view>
+<!-- 右上角弹窗开始 -->
+<view class="cu-modal {{modalName=='RadioModal'?'show':''}}" bindtap="hideModal" style="background:#00000;">
+  <view class="cu-dialog" catchtap style="width:280rpx;">
+    <radio-group class="block">
+      <view class="cu-list menu text-left">
+        <view class="cu-item" bindtap="deleteArticle" >
+          <label class="flex justify-between align-center flex-sub">
+           <text class="flex-sub" >
+               删除
+           </text>
+          </label>
+        </view>
+        <view class="cu-item" bindtap="messageArticle">
+          <label class="flex justify-between align-center flex-sub">
+           <text class="flex-sub" wx:if="{{message ==1}}">
+               设为私密
+           </text>
+           <text class="flex-sub" wx:if="{{message ==0}}">
+               设为公开
+           </text>
+          </label>
+        </view>
+      </view>
+    </radio-group>
+  </view>
+</view>
+<!-- 右上角弹窗结束 -->
+
+<!-- 卡片的展示开始 -->
+<view class="cu-card dynamic no-card ">
+    <view wx:for="{{articleList}}" wx:key="articleId" wx:for-index="index" wx:for-item="articleList" data-id="{{index}}" class="cu-item shadow solids-bottom">
+    <!-- 右上角开始  -->
+    <view class="action margin-right-sm " style="position: absolute;right: 0;top: 0;">
+      <text class="cuIcon-moreandroid lg text-gray " bind:tap="showModal" data-id="{{articleList.articleId}}" data-message="{{articleList.message}}"
+      data-picture="{{articleList.img}}"></text>
+    </view>
+    <!-- 右上角结束 -->
+        <navigator url="../article/article?articleId={{articleList.articleId}}" open-type="navigate" data-id="{{index}}" >
+          <view class='text-content margin-top-sm ' 
+          style="padding: 0 30rpx 0 ; max-height: 6.4em;overflow: hidden;font-size: 30rpx;margin-bottom: 20rpx;">{{articleList.title}}</view>
+          
+          <view class="grid col-1 flex-sub padding-lr">
+            <view class="bg-img only-img" style="background-image:url({{articleList.img}})"></view>
+          </view>
+          <view class='text-gray text-sm text-right padding'>
+            <text class="cuIcon-timefill"></text>
+            {{articleList.createTime}}
+            <text class="cuIcon-attentionfill" />
+            {{articleList.look}}
+            <text class="cuIcon-appreciatefill" />
+            {{articleList.likes}}
+            <text class="cuIcon-messagefill" />
+           22
+            </view>
+        </navigator>
+    </view>
+</view>
+<!-- 卡片的展示结束 -->
+
+    <view class="cu-timeline" wx:for="{{articleList}}" wx:for-index="index" wx:for-item="articleList">
+      <view class="cu-time ">{{articleList.day}}</view>
+      <view class="cu-item {{articleId == articleList.articleId? 'text-blue':''}}">
+            <view class="content {{articleId == articleList.articleId? 'bg-blue light':''}}" bind:tap="focus" data-id="{{articleList.articleId}}">
+              <view class="cu-capsule radius">
+                <!-- <view class="cu-tag bg-cyan" wx:if="{{articleList.time<12}}">上午</view> -->
+                <!-- <view class="cu-tag bg-cyan" wx:elif="{{articleList.time=12}}">中午</view> -->
+                <view class="cu-tag bg-cyan" >时间：</view>
+                <view class="cu-tag line-cyan">{{articleList.time}}</view>
+                <text style="padding-left: 30rpx;">{{articleList.title}}</text>
+              </view>
+              <view class="margin-top text-cut">{{articleList.text}}</view>
+            </view>
+      </view>
+    </view>
+
+</scroll-view>
+

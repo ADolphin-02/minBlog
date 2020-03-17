@@ -23,12 +23,13 @@ Page({
     randomNum: 0,
     animationTime: 1,
     moreFlag: false,
-    pages: 0,
+    page: 1,
     cardCur: 0,
     TabCur: 0,
     scrollLeft: 0,
     Role: '游客',
-    roleFlag: false,
+    loadMore:true,
+    loadProgress:0,
     colourList: [{
       colour: 'bg-red'
     }, {
@@ -78,6 +79,7 @@ Page({
     if (app.globalData.userInfo != null) {
       this.setData({
         userInfo: app.globalData.userInfo,
+        Role: app.globalData.Role, // 为了其他页面登陆同步
         hasUserInfo: true
       })
     } else if (this.data.canIUse) {
@@ -86,7 +88,7 @@ Page({
       app.userInfoReadyCallback = res => {
         this.setData({
           userInfo: res.userInfo,
-          hasUserInfo: true,
+          hasUserInfo: true
         })
       }
     } else {
@@ -109,9 +111,8 @@ Page({
     let _this = this;
     app.login().then(function (res) {
       var urlAdminLogin = app.globalData.url + '/wx/login';
-      var data;
 
-      var token = res.data.data
+      var token = res.token
       var urlPostList = app.globalData.url + '/wx/loadAllArticle'
       var paramBanner = {}//limit: 5 
       // @todo 文章Banner网络请求API数据
@@ -129,14 +130,13 @@ Page({
     if (e.detail.errMsg == "getUserInfo:fail auth deny") {
       that.setData({
         hasUserInfo: false,
-        Role: '游客',
-        roleFlag: false,// 不知道
       })
     } else {
       app.globalData.userInfo = e.detail.userInfo;
       that.setData({
         userInfo: e.detail.userInfo,
         hasUserInfo: true,
+        Role : '已登陆'
       })
       //userInfo存储到storage
       wx.setStorage({
@@ -175,6 +175,8 @@ Page({
     request.requestPostApi(urlLink, token, params, this, this.checkSuccess, this.checkFail)
 
   },
+
+
   DotStyle(e) {
     this.setData({
       DotStyle: e.detail.value
@@ -251,21 +253,23 @@ Page({
       modalName: null
     })
   },
+  // tab
   tabSelect(e) {
 
+    // console.warn(e)
+    var url = e.currentTarget.dataset.url
     this.randomNum();
     this.setData({
       postList: [],
     });
-    var urlPostList = app.globalData.url + '/api/content/posts';
+    var urlPostList = app.globalData.url + url;
     var token = app.globalData.token;
     console.warn(e.currentTarget.dataset.id);
     var params = {
-      page: e.currentTarget.dataset.id,
-      size: 10,
-      sort: 'createTime,desc',
+      // page: e.currentTarget.dataset.id,
+      // size: 10,
+      // sort: 'createTime,desc',
     };
-
 
     //@todo 文章内容网络请求API数据
     request.requestGetApi(urlPostList, token, params, this, this.successPostList, this.failPostList);
@@ -351,7 +355,18 @@ Page({
    * 加载更多
    */
   loadMore: function () {
-
+      this.setData({
+        loadMore:false
+      })
+      var page = this.data.page;
+      
+      var urlPostList = app.globalData.url+'/wx/loadAllArticle';
+      var params = {
+        page: page
+      };
+      var token = app.globalData.token;
+      // @todo 文章列表网络请求API数据
+      request.requestGetApi(urlPostList, token, params, this, this.successPostList, this.failPostList);
   },
 
 
@@ -383,22 +398,30 @@ Page({
    */
   successPostList: function (res, selfObj) {
     var that = this;
+    var page = that.data.page+1;
 
     var list = res.data;
     for (let i = 0; i < list.length; ++i) {
       list[i].img = list[i].img.replace(/\\/g, '/')
       // list[i].createTime = util.customFormatTime(list[i].createTime, 'Y.M.D');
     }
+    var oldList = that.data.postList
+    if(oldList != null){ // 为了判断第一次的旧数据
+      // console.log(oldList.concat(list)) // 在setData里面不能写函数
+      list = oldList.concat(list)
+    }
     if (res.data != "") {
       that.setData({
-        postList: res.data,
-        moreFlag: false,
+        postList: list,
+        moreFlag: true,
+        page: page
         // pages: res.data.pages,
       });
     } else {
       that.setData({
-        postList: res.data,
-        moreFlag: true,
+        postList: list,
+        moreFlag: false, // 作者更新
+        loadMore: true // 加载关闭
         // pages: res.data.pages,
       });
     }
@@ -415,10 +438,11 @@ Page({
    * 后台登入请求--接口调用成功处理
    */
   successAdminLogin: function (res, selfObj) {
-    app.globalData.token = res.data;// 更新token
+    console.log(res)
+    app.globalData.token = res.data.token;// 更新token
     wx.setStorage({
       key: 'token',
-      data: res.data,
+      data: res.data.token,
       success: function (result) {
         console.log(result, 'token写入缓存')
         wx.hideLoading()
@@ -454,39 +478,48 @@ Page({
       postList: null,
     });
 
-    var urlPostList = app.globalData.url + '/api/content/posts/search?sort=createTime%2Cdesc&keyword=' + this.data.SearchContent;
+    var urlPostList = app.globalData.url + '/wx/loadAllArticle?text=' + this.data.SearchContent;
     var token = app.globalData.token;
     var params = {};
 
 
     //@todo 搜索文章网络请求API数据
-    request.requestPostApi(urlPostList, token, params, this, this.successSearch, this.failSearch);
+    request.requestGetApi(urlPostList, token, params, this, this.successSearch, this.failSearch);
   },
   successSearch: function (res, selfObj) {
     var that = this;
-    // console.warn(res.data.content);
-    var list = res.data.content;
-    for (let i = 0; i < list.length; ++i) {
-      list[i].createTime = util.customFormatTime(list[i].createTime, 'Y.M.D');
-    }
-    if (res.data.content != "") {
+    console.warn(res.data);
+    if (res.data != "") {
       that.setData({
-        postList: res.data.content,
-        moreFlag: false,
-        pages: res.data.pages,
+        postList: res.data,
+        moreFlag: true,
+        // pages: res.data.pages,
       });
     } else {
       that.setData({
-        postList: res.data.content,
-        moreFlag: true,
-        pages: res.data.pages,
+        postList: res.data,
+        moreFlag: false,
+        // pages: res.data.pages,
       });
     }
   },
   failSearch: function (res, selfObj) {
     console.error('failSearch', res)
   },
-
+  loadProgress(){
+    this.setData({
+      loadProgress: this.data.loadProgress+3
+    })
+    if (this.data.loadProgress<100){
+      setTimeout(() => {
+        this.loadProgress();
+      }, 100)
+    }else{
+      this.setData({
+        loadProgress: 0
+      })
+    }
+  }
   /**
   * 用户点击右上角分享
   */

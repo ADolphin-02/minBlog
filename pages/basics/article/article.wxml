@@ -1,2 +1,191 @@
-<!--pages/basics/article/article.wxml-->
-<text>pages/basics/article/article.wxml</text>
+<scroll-view scroll-y class="DrawerPage" scroll-with-animation="true" style="background-color: {{skin?'#030852':'#ffffff'}};">
+
+    <cu-custom bgColor="bg-lightGrey" isBack="{{false}}" isCustom="{{true}}" isNav="{{false}}">
+        <view slot="backText">返回</view>
+        <view slot="content" class="text-shadow-meows">
+            <!-- <text class="text-white text-bold">{{postId}}</text> -->
+            <!-- <text class="text-white text-bold">如何写出无法维护的代码</text> -->
+        </view>
+    </cu-custom>
+
+    
+    
+    
+    <view class="flex-sub text-center margin-sm">
+      <view class="text-xxxl">
+        <text class="text-black text-bold">{{articleTitle}}</text>
+      </view>
+    </view>
+
+    
+    <!-- <view class="bg-white flex-sub radius shadow-lg">
+        <image src="https://image.weilanwl.com/gif/loading-white.gif" mode="aspectFit" class="gif-white response" style="height:240rpx"></image>
+    </view> -->
+    
+    
+    <view class="margin-lr-sm flex flex-wrap">
+        <view class="padding-xs bg-white">
+            <!-- <view class="cu-tag radius sm">Java</view> -->
+            <!-- <view class="cu-tag radius" wx:for="{{postTags}}" wx:key="key" wx:for-item="postTags" wx:for-index="index">{{postTags.name}}</view> -->
+            <view class="cu-tag radius" >{{articleLabelValues}}</view>
+        </view>
+    </view>
+
+    <view class="cf">
+        <view class="margin-sm fr">
+            <view class="cu-capsule round">
+                <view class="cu-tag bg-red sm">
+                    <text class="cuIcon-likefill"></text>
+                </view>
+                <view class="cu-tag line-red sm">
+                {{articleLikes}}
+                </view>
+            </view>
+            <view class="cu-capsule round">
+                <view class="cu-tag bg-orange sm">
+                    <text class="cuIcon-hotfill"></text>
+                </view>
+                <view class="cu-tag line-orange sm">
+                {{articleLook}}
+                </view>
+            </view>
+            <view class="cu-capsule round">
+                <view class="cu-tag  bg-blue sm">
+                    <text class="cuIcon-timefill"></text>
+                </view>
+                <view class="cu-tag line-blue sm">
+                {{articleDate}}
+                </view>
+            </view>
+            <text class="cu-capsule" decode="{{true}}">&nbsp;</text>
+        </view>
+    </view>
+
+    <view class="margin-sm">
+        <!-- <htmltowxml text="{{articleText}}" type="md" highlightStyle="{{style}}" linenums="{{false}}" showLoading="{{true}}" bindWxmlTagATap="wxmlTagATap" imghost=""></htmltowxml> -->
+    </view>
+    
+    <!-- <view class="ad">
+        <ad unit-id="adunit-da5b1800a9eae6d3" ad-intervals="30"></ad> 广告
+    </view> -->
+
+    <view class="cu-bar bg-white align-center">
+        <view class="action border-title">
+            <text class="text-xxl text-bold text-blue">评论</text>
+            <text class="bg-gradual-blue"></text>
+        </view>
+    </view>
+
+<!-- 评论接口 -->
+    <view class="cu-bar input" hidden="{{CommentSwitch}}">
+        <!-- <view class="action">
+            <text class="cuIcon-sound text-grey"></text>
+        </view> -->
+        <view class="flex justify-center" style="width:100%" wx:if="{{!hasUserInfo && canIUse}}"> 
+            <view>
+                <button class="cu-btn bg-blue shadow-blur round"role="button"aria-disabled="false" open-type="getUserInfo" bindgetuserinfo="getUserInfo">授权后可评论</button>
+            </view>
+        </view>
+        <block wx:else>
+            <input bindinput="Comment" style="margin-left: 40rpx;" class="solid-bottom" type="text"  focus="{{focus}}" bindblur="onReplyBlur" maxlength="300" cursor-spacing="10" placeholder="{{placeholder}}" value="{{commentValue}}"></input>
+            <view class="action">
+                <text class="{{false?'cuIcon-likefill text-red':'cuIcon-like text-grey'}}" bindtap="Likes"></text>
+            </view>
+            <button class="cu-btn bg-lightBlue shadow-blur" bindtap="CommentSubmit" hidden="{{CommentShow}}">发送</button>
+            <button class="cu-btn bg-grey shadow-blur" bindtap="CommentSubmitTips" hidden="{{!CommentShow}}">{{LastTime}}S</button>
+        </block>
+    </view>
+    
+    <!-- <view class="margin-bottom">
+        <view class="margin-sm flex flex-wrap align-center" >
+            <view class="basis-xs">
+                <view class="cu-avatar lg round margin-left-sm" style="background-image:url({{userInfo.avatarUrl}})"></view>
+            </view>
+            <view class="grid col-1 basis-xl solid-bottom" style="min-height:120rpx;">
+                <view class="padding-xs">
+                    <text class="text-black text-bold">一直屯</text>
+                    <view class="fr text-xs" style="line-height: 32rpx;">
+                        <text class="text-grey">1997.02.7</text>
+                    </view>
+                </view>
+                <view class="padding-sm">
+                    <text class="text-sm">你好的</text>
+
+                    <view class='padding-sm radius  text-sm text-gray'>
+                        <view class="flex" >
+                            <view bindtap="focusComment">
+                                <view class='text-grey'>250：</view>
+                            </view>
+                            <view class='flex-sub'>888</view>
+                        </view>
+                    </view>
+                    
+                </view>
+            </view>
+        </view>
+    </view> -->
+
+
+<view class="cu-modal {{modalName=='RadioModal'?'show':''}}" bindtap="hideModal">
+  <view class="cu-dialog" catchtap style="width:280rpx;">
+    <radio-group class="block">
+      <view class="cu-list menu text-left">
+        <view class="cu-item" bindtap="deleteComment" >
+          <label class="flex justify-between align-center flex-sub">
+           <text class="flex-sub" >
+               删除
+           </text>
+          </label>
+        </view>
+      </view>
+    </radio-group>
+  </view>
+</view>
+
+    <view class="margin-bottom shadow" wx:if="{{commentList != null}}">
+        <view class="margin-sm flex flex-wrap align-center"   wx:for="{{commentList}}"  wx:for-item="commentList" wx:key="index" wx:for-index="index" 
+         bindtap="focusComment"  data-commentid="{{commentList.commentId}}" data-nickname="{{commentList.userInfo.nickName}}"
+         bindlongpress="showModal" >
+            <view class="basis-xs">
+                <!-- <view class="cu-avatar lg round margin-left-sm" style="background-image:url({{commentList.email==''?commentList.authorUrl:'https://gravatar.loli.net/avatar/undefined/?s=256&d=mp'}});"></view> -->
+                <view class="cu-avatar lg round margin-left-sm" style="background-image:url({{commentList.userInfo.avatarUrl}});"></view>
+            </view>
+            <view class="grid col-1 basis-xl solid-bottom" style="min-height:120rpx;">
+                <view class="padding-xs">
+                    <text class="text-black text-bold" bindtap="focusComment"  data-commentid="{{commentList.commentId}}" data-nickname="{{commentList.userInfo.nickName}}">{{commentList.userInfo.nickName}}</text>
+                    <view class="fr text-xs" style="line-height: 32rpx;">
+                        <text class="text-grey">{{commentList.createTime}}</text>
+                    </view>
+                </view>
+                <view class="padding-sm">
+                    <text class="text-sm" >{{commentList.content}}</text>
+                    <text class="cuIcon-messagefill text-gray margin-left-sm"></text>
+                    <text class="text-gray margin-left-xs">{{commentList.child.length}}</text>
+                    <view class='padding-sm radius  text-sm text-gray'>
+                    <!-- 回复的开始 -->
+                        <view class="flex" wx:for="{{commentList.child}}" wx:key="id" wx:for-index="id" wx:for-item="childItem">
+                            <view>
+                             <!-- data-id="{{item._id}}" data-name="{{childItem.cNickName}}" data-openid="{{childItem.cOpenId}}" bindtap="focusComment" -->
+                                <view class='text-grey' >{{childItem.userInfo.nickName}}:</view>
+                            </view>
+                                <view class='flex-sub'>{{childItem.content}}</view>
+                        </view>
+                    <!-- 回复的结束 -->
+                    </view>
+                </view>
+            </view>
+        </view>
+    </view>
+    <view class="margin-bottom" wx:else>
+           <view class="solids-bottom padding-xs flex align-center">
+    <view class="flex-sub text-center">
+      <view class="solid-bottom text-lg padding">
+        <text class="text-black">没有评论 ~</text>
+      </view>
+    </view>
+  </view>
+    </view>
+
+
+</scroll-view>
+

@@ -1,0 +1,74 @@
+<scroll-view scroll-y class="DrawerPage" scroll-with-animation="true" style="background-color: {{skin?'#030852':'#ffffff'}};">
+
+    <cu-custom bgColor="bg-lightGrey" isBack="{{false}}" isCustom="{{true}}" isNav="{{false}}">
+        <view slot="backText">返回</view>
+        <view slot="content" class="text-shadow-meows">
+            <!-- <text class="text-white text-bold">{{postId}}</text> -->
+            <!-- <text class="text-white text-bold">如何写出无法维护的代码</text> -->
+        </view>
+    </cu-custom>
+
+<form class="" report-submit="false" bindsubmit="formSubmit" bindreset="">
+    <view class="cu-form-group">
+    	<view class="title">输入标题</view>
+    	<input placeholder="标题" name="title"></input>
+    </view>
+    <view class="cu-form-group cu-item arrow">
+    	<view class="title">博客类型</view>
+    	<picker bindchange="PickerChange" value="{{index}}" range="{{category}}" range-key="name" name="categoryId" >
+			<view class="picker">
+				{{index?category[index].name:'选择类型'}}
+			</view>
+		</picker>
+    	<!-- <input placeholder="标题"></input> -->
+    </view>
+
+    
+
+    <view class="cu-form-group">
+    	<view class="title">输入标签</view>
+    	<input placeholder="逗号隔开" name="labelValues"></input>
+    </view>
+
+    <view class="cu-form-group margin-top">
+		<textarea maxlength="-1" disabled="{{modalName!=null}}" bindinput="textareaAInput" name="text" placeholder="多行文本输入框"></textarea>
+	</view>
+
+    <view class="cu-form-group">
+		<view class="title">是否公开</view>
+		<switch class=" radius sm " name="message" checked></switch>
+	</view>
+
+<view class="cu-bar bg-white margin-top">
+		<view class="action">
+			图片上传
+		</view>
+		<view class="action">
+			{{imgList.length}}/1
+		</view>
+	</view>
+    <view class="cu-form-group">
+		<view class="grid col-4 grid-square flex-sub">
+			<view class="bg-img" wx:for="{{imgList}}" wx:key="{{index}}" bindtap="ViewImage" data-url="{{imgList[index]}}" name="img">
+				<image src='{{imgList[index]}}' mode='aspectFill'></image>
+				<view class="cu-tag bg-red" catchtap="DelImg" data-index="{{index}}">
+					<text class="cuIcon-close"></text>
+				</view>
+			</view>
+			<view class="solids" bindtap="ChooseImage" wx:if="{{imgList.length<1}}" >
+				<text class="cuIcon-cameraadd"></text>
+			</view>
+		</view>
+	</view>
+
+    <view class="flex solid-bottom padding justify-center">
+        <button class="cu-btn bg-yellow round shadow" form-type="reset">
+        <text class="cuIcon-refresh lg text-while"></text>
+        重置</button>
+        <view class="padding"></view>
+         <button class="cu-btn  round shadow" form-type="submit">
+        <text class="cuIcon-check lg text-while"></text>
+        提交</button>
+	</view>
+</form>
+</scroll-view>

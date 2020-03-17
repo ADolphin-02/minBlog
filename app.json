@@ -2,11 +2,14 @@
   "pages": [
     "pages/basics/index/index",
     "pages/about/home/home",
+    "pages/basics/myblog/myblog",
+    "pages/basics/writeBlog/writeBlog",
+
     "pages/basics/article/article"
     
   ],
   "window": {
-    "backgroundTextStyle": "light",
+    "backgroundTextStyle": "dark",
     "navigationBarBackgroundColor": "#fff",
     "navigationBarTitleText": "ColorUI",
     "navigationStyle": "custom",
@@ -18,6 +21,12 @@
     "wh-typeWriter": "/components/typeWriter/wh-typeWriter",
     "wh-authorCard": "/components/authorCard/wh-authorCard",
     "wh-addTips": "/components/addTips/wh-addTips"
+  },
+  "plugins": {
+    "htmltowxml": {
+      "version": "1.4.0",
+      "provider": "wxa51b9c855ae38f3c"
+    }
   },
   "sitemapLocation": "sitemap.json"
 }
